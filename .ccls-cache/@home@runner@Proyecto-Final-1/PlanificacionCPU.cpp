@@ -184,12 +184,31 @@ void PlanificacionCPU::eliminarProceso(){
         if(listaProcesos.quitarNombreProceso(nombreEliminar) == false){
           cout << "No se encontró el proceso." << endl;
         }
+
+        
+        for(int i = 0; i < nombreProcesosFIFO.size(); i++){
+          if(nombreProcesosFIFO[i] == nombreEliminar){
+            nombreProcesosFIFO.erase(nombreProcesosFIFO.begin() + i);
+          }
+        }
+        break;
       case 2:
         cout << "\033[2J\033[H";
         cout << "Ingrese el indicador del proceso a eliminar: ";
         cin >> indicador;
         if(listaProcesos.quitarProceso(indicador) == false){
           cout << "No se encontró el proceso." << endl;
+        }
+
+        for(int i = 0; i < listaProcesos.getVectorProcesosGuardados().size(); i++){
+          if(listaProcesos.getVectorProcesosGuardados()[i].getIndicador()  == indicador){
+            for(int j = 0; j < nombreProcesosFIFO.size(); j++){
+              string nombre = listaProcesos.getVectorProcesosGuardados()[i].getNombre();
+              if(nombre == nombreProcesosFIFO[j]){
+                nombreProcesosFIFO.erase(nombreProcesosFIFO.begin() + j);
+              }
+            }
+          }  
         }
         break;
       case 3:
