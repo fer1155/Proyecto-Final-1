@@ -12,10 +12,6 @@ proceso::proceso(string nombre, int arrivalTime, int burstTime, int prioridad, i
   this->burstTime = burstTime;
   this->prioridad = prioridad;
   this->indicador = indicador;
-  cout << "Proceso creado: " << nombre << endl;
-  cout << "Proceso creado: " << arrivalTime << endl;
-  cout << "Proceso creado: " << burstTime << endl;
-  cout << "Proceso creado: " << indicador << endl;
 }
 
 proceso::~proceso(){

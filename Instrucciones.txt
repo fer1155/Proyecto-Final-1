@@ -1,0 +1,77 @@
+1) A la hora de crear un nuevo proceso, es necesario tener un orden. Ejemplo: si ya creamos el proceso 1, el siguiente debe ser el proceso 2, etc. Ya que dichos procesos los podremos organizar con su Arrival time a la hora de ejecutar los algoritmos.
+
+2) Al salir del programa es necesario que se haga desde el menú principal, marcando la opción 0. Si se llegase a salir del programa en otro momento de su ejecución le solicitamos que borre los .txt de cada proceso. 
+
+3) Al momento de poner los tiempos de llegada (Arrival Time) en los algoritmos, es necesario que todos los valores de arrival time sean 0, o también existe la opción de poner un solo valor de arrival time igual a 0 y los demás valores de arrival time con distintos números (diferentes de 0 y diferentes entre si)
+
+---- Queríamos solicitar una disculpa por los dos algoritmos faltantes, son dos algoritmos que no logramos implementar con este enfoque (donde cada proceso es un .txt). Y por ende nos enfocamos en pulir FIFO/SJF/RR ----
+
+Si se desea crear un proceso sin escribir líneas de instrucciones se coloca “N”, dicha instrucción representa una línea vacía, (el burstTime son las lineas que posea el .txt del proceso).
+
+Ejemplo:
+N
+N
+END NULL NULL NULL NULL
+
+El conjunto de instrucciones que admite el simulador es:
+
+SET - SET D1 X NULL NULL
+LDR - LDR D3 NULL NULL NULL
+ADD - ADD D1 NULL NULL NULL 
+ADD - ADD D1 D3 NULL NULL
+ADD - ADD D1 D3 D4 NULL
+INC - INC D3 NULL NULL NULL 
+DEC - DEC D3 NULL NULL NULL 
+STR - STR D3 NULL NULL NULL
+SHW - SHW D2 NULL NULL NULL 
+SHW - SHW ACC NULL NULL NULL
+SHW - SHW ICR NULL NULL NULL 
+SHW - SHW MAR NULL NULL NULL 
+SHW - SHW MDR NULL NULL NULL 
+SHW - SHW UC NULL NULL NULL 
+PAUSE - PAUSE NULL NULL NULL NULL
+END - END NULL NULL NULL NULL
+
+Para realizar un test más óptimo dejamos tres procesos de ejemplo para realizar pruebas.
+
+– Proceso 1 –
+
+SET D5 12 NULL NULL
+SET D2 23 NULL NULL
+SET D8 3 NULL NULL
+SET D3 5 NULL NULL
+LDR D2 NULL NULL NULL
+ADD D5 NULL NULL NULL
+ADD D8 NULL NULL NULL
+STR D3 NULL NULL NULL
+LDR D3 NULL NULL NULL
+ADD D2 NULL NULL NULL
+STR D2 NULL NULL NULL
+SHW D2 NULL NULL NULL
+END NULL NULL NULL NULL
+
+– Proceso 2 –
+
+SET D32 18 NULL NULL
+SET D33 10 NULL NULL
+SET D34 15 NULL NULL
+SET D35 12 NULL NULL
+LDR D34 NULL NULL NULL
+ADD D33 NULL NULL NULL
+STR D32 NULL NULL NULL
+INC D35 NULL NULL NULL
+PAUSE NULL NULL NULL NULL
+END NULL NULL NULL NULL
+
+– Proceso 3 –
+
+SET D352 21 NULL NULL
+SET D200 19 NULL NULL
+SET D310 30 NULL NULL
+SET D315 53 NULL NULL
+LDR D200 NULL NULL NULL
+ADD D352 NULL NULL NULL
+ADD D310 NULL NULL NULL
+STR D315 NULL NULL NULL
+SHW D315 NULL NULL NULL
+END NULL NULL NULL NULL

@@ -12,9 +12,9 @@ int main() {
   while(opcion != 0){
     cout << "1. Crear Proceso" << endl;
     cout << "2. Mostrar Procesos" << endl;
-    //cout << "3. Actualizar Procesos" << endl;
     cout << "3. Eliminar proceso" << endl;
     cout << "4. Ejecutar Procesos" << endl;
+    cout << "0. Salir" << endl;
     cout << "Ingrese una opción: ";
     cin >> opcion;
     cout << endl;
@@ -29,10 +29,6 @@ int main() {
         cout << "\033[2J\033[H";
         manejoDeProcesos.mostrarProcesos();
         break;
-      //case 3:
-        //manejoDeProcesos.actualizarProcesos();
-        //cout << "en prueba";
-        //break;
       case 3:  
         cout << "\033[2J\033[H";
         manejoDeProcesos.eliminarProceso();
@@ -43,7 +39,7 @@ int main() {
           cout << "¿Qué algoritmo desea utilizar?" << endl;
           cout << "1. Algoritmo FCFS" << endl;
           cout << "2. Algoritmo SJN" << endl;
-          cout << "3. Algoritmo Round Robin" << endl;
+          cout << "3. Algoritmo Round Robin (con reinicio)" << endl;
           cout << "4. Salir del menu principal" << endl;
           cout << "Ingrese una opción:";
           cin >> opcion2;
@@ -51,19 +47,15 @@ int main() {
           
           switch(opcion2){
             case 1:
-              cout << "\033[2J\033[H";
               manejoDeProcesos.algFifo();
               break;
             case 2:
-              cout << "\033[2J\033[H";
               manejoDeProcesos.algSJF();
               break;
             case 3:
-              cout << "\033[2J\033[H";
-              //manejoDeProcesos.algRoundRobin();
+              manejoDeProcesos.algRR();
               break;
             case 4:
-              cout << "\033[2J\033[H";
               cout << "Saliendo..." << endl;
               break;
             default:
@@ -72,14 +64,13 @@ int main() {
         }
         break;
       case 0:
-        cout << "Saliendo..." << endl;
+        cout << "Saliendo..." << endl << endl;
         break;
       default:
         cout << "Opción inválida." << endl;
     }
   }
 
-  
   for(int i = 0; i < manejoDeProcesos.getlistaProcesos().getVectorProcesosGuardados().size(); i++){
     string nombre = manejoDeProcesos.getlistaProcesos().getVectorProcesosGuardados()[i].getNombre() + ".txt";
     const char* nombreArchivo = nombre.c_str();

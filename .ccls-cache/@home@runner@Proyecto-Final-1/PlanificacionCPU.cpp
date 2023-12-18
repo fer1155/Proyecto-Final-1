@@ -8,6 +8,7 @@
 #include <algorithm>
 #include <iostream>
 #include <sstream>
+#include <stdlib.h>
 
 PlanificacionCPU::PlanificacionCPU() {
   this->indicador = 0;
@@ -15,7 +16,7 @@ PlanificacionCPU::PlanificacionCPU() {
 
 void PlanificacionCPU::crearProceso() {
   string nombreArchivo;
-  cout << "Ingrese el nombre del archivo (Sin espacios): ";
+  cout << "Ingrese el nombre del archivo sin espacios(EJ:proceso1): ";
   cin >> nombreArchivo;
   int burstTime = 0;
   
@@ -52,12 +53,12 @@ void PlanificacionCPU::crearProceso() {
 
   indicador++;
   nombreProcesosFIFO.push_back(nombreArchivo);
-  nombreProcesosSJF.push_back(nombreArchivo);
+  //nombreProcesosSJF.push_back(nombreArchivo);
   nombreProcesosSJF2.push_back(nombreArchivo);
-  bursTimeSJF.push_back(burstTime);
+  //bursTimeSJF.push_back(burstTime);
+  burstTimeGeneral.push_back(burstTime);
   proceso nuevoProceso(nombreArchivo, 0, burstTime, 0, indicador);
   listaProcesos.agregarProceso(nuevoProceso);
-  cout << "\033[2J\033[H";
 }
 
 void PlanificacionCPU::mostrarProcesos() {
@@ -74,11 +75,9 @@ void PlanificacionCPU::mostrarProcesos() {
     int opcion2 = 0;
     switch(opcion){
       case 1:
-        cout << "\033[2J\033[H";
         listaProcesos.mostrarTodosProcesos();
         break;
       case 2:
-        cout << "\033[2J\033[H";
         while (opcion2 != 3){
           cout << "¿Buscar proceso por nombre o Indicador?" << endl;
           cout << "1. Nombre" << endl;
@@ -92,7 +91,6 @@ void PlanificacionCPU::mostrarProcesos() {
           int indicador;
           switch(opcion2){
             case 1:
-              cout << "\033[2J\033[H";
               cout << "Ingrese el nombre del proceso: ";
               cin >> nombre;
               if(listaProcesos.buscarNombreProceso(nombre) == false){
@@ -100,7 +98,6 @@ void PlanificacionCPU::mostrarProcesos() {
               }
               break;
             case 2:
-              cout << "\033[2J\033[H";
               cout << "Ingrese el indicador del proceso: ";
               cin >> indicador;
               if(listaProcesos.buscarProceso(indicador) == false){
@@ -108,9 +105,7 @@ void PlanificacionCPU::mostrarProcesos() {
               }
               break;
             case 3:
-              cout << "\033[2J\033[H";
               cout << "Saliendo..." << endl;
-              cout << "\n";
               break;
             default:
               cout << "Opción inválida." << endl;
@@ -119,9 +114,7 @@ void PlanificacionCPU::mostrarProcesos() {
         }
         break;
       case 3:
-        cout << "\033[2J\033[H";
         cout << "Saliendo..." << endl;
-        cout << "\n";
         break;
       default:
         cout << "Opción inválida." << endl;
@@ -178,24 +171,49 @@ void PlanificacionCPU::eliminarProceso(){
     int indicador;
     switch(opcion){
       case 1:
-        cout << "\033[2J\033[H";
         cout << "Ingrese el nombre del proceso a eliminar: ";
         cin >> nombreEliminar;
+
+        for(int  i = 0; i < listaProcesos.getVectorProcesosGuardados().size(); i++){
+          if(listaProcesos.getVectorProcesosGuardados()[i].getNombre() == nombreEliminar){
+            for(int j = 0; j < burstTimeGeneral.size(); j++){
+              if(burstTimeGeneral[j] == listaProcesos.getVectorProcesosGuardados()[i].getBurstTime()){
+                burstTimeGeneral.erase(burstTimeGeneral.begin() + j);
+              }
+            }
+          }
+        }
+        
         if(listaProcesos.quitarNombreProceso(nombreEliminar) == false){
           cout << "No se encontró el proceso." << endl;
         }
 
-        
         for(int i = 0; i < nombreProcesosFIFO.size(); i++){
           if(nombreProcesosFIFO[i] == nombreEliminar){
             nombreProcesosFIFO.erase(nombreProcesosFIFO.begin() + i);
           }
         }
+
+        for(int i = 0; i < nombreProcesosSJF2.size(); i++){
+          if(nombreProcesosSJF2[i] == nombreEliminar){
+            nombreProcesosSJF2.erase(nombreProcesosSJF2.begin() + i);
+          }
+        }
         break;
       case 2:
-        cout << "\033[2J\033[H";
         cout << "Ingrese el indicador del proceso a eliminar: ";
         cin >> indicador;
+
+        for(int i = 0; i < listaProcesos.getVectorProcesosGuardados().size(); i++){
+          if(listaProcesos.getVectorProcesosGuardados()[i].getIndicador()  == indicador){
+            for(int j = 0; j < burstTimeGeneral.size(); j++){
+              if(burstTimeGeneral[j] == listaProcesos.getVectorProcesosGuardados()[i].getBurstTime()){
+                burstTimeGeneral.erase(burstTimeGeneral.begin() + j); 
+              }
+            }    
+          }
+        }
+        
         if(listaProcesos.quitarProceso(indicador) == false){
           cout << "No se encontró el proceso." << endl;
         }
@@ -210,9 +228,19 @@ void PlanificacionCPU::eliminarProceso(){
             }
           }  
         }
+
+        for(int i = 0; i < listaProcesos.getVectorProcesosGuardados().size(); i++){
+          if(listaProcesos.getVectorProcesosGuardados()[i].getIndicador()  == indicador){
+            for(int j = 0; j < nombreProcesosSJF2.size(); j++){
+              string nombre = listaProcesos.getVectorProcesosGuardados()[i].getNombre();
+              if(nombre == nombreProcesosSJF2[j]){
+                nombreProcesosSJF2.erase(nombreProcesosSJF2.begin() + j);
+              }
+            }
+          }  
+        }
         break;
       case 3:
-        cout << "\033[2J\033[H";
         cout << "Saliendo..." << endl;
         break;
       default:
@@ -234,7 +262,6 @@ void PlanificacionCPU::algFifo(){
 
     switch(opcion){
       case 1:
-        cout << "\033[2J\033[H";
         cout << "Iniciando algoritmo FIFO" << endl;
         for(int i = 0; i < listaProcesos.getVectorProcesosGuardados().size(); i++){
           int arrivalTimeNuevo;
@@ -246,8 +273,7 @@ void PlanificacionCPU::algFifo(){
         fifo();
         break;
       case 2:
-        cout << "\033[2J\033[H";
-        cout << "Saliendo..." << endl;
+        cout << "Saliendo..." << endl<< endl;
         break;
       default:
         cout << "Opción inválida." << endl;
@@ -317,6 +343,8 @@ void PlanificacionCPU::fifo(){
     }
   }
 
+  cout << endl << "----------------------------" << endl;
+  cout << endl << "Diagrama de Gantt:" << endl << endl;
   int ind = 0;
   for(int i = 0; i < fifoEjecucion.size(); i++){
     cout << fifoEjecucion[i] << "--";
@@ -346,6 +374,7 @@ void PlanificacionCPU::fifo(){
 
   cout << "Tiempo de espera promedio: ";
   cout << tiempoDeEsperaPromedio/nombreProcesosFIFO.size() << endl;
+  cout << endl << "----------------------------" << endl;
   cout << endl << "FIFO ejecutado" << endl << endl;
 
   fifoEjecucion.clear();
@@ -387,8 +416,16 @@ void PlanificacionCPU::algSJF(){
 
     switch(opcion){
       case 1:
-        cout << "\033[2J\033[H";
         cout << endl << "Iniciando algoritmo SJN" << endl;
+
+        for(int i = 0; i < nombreProcesosFIFO.size(); i++){
+          nombreProcesosSJF.push_back(nombreProcesosFIFO[i]);
+        }
+
+        for(int i = 0; i < burstTimeGeneral.size(); i++){
+          bursTimeSJF.push_back(burstTimeGeneral[i]);
+        }
+        
         for(int i = 0; i < listaProcesos.getVectorProcesosGuardados().size(); i++){
           int arrivalTimeNuevo;
           cout << "Ingrese el tiempo de llegada del proceso " << listaProcesos.getVectorProcesosGuardados()[i].getNombre() + ": ";
@@ -401,8 +438,7 @@ void PlanificacionCPU::algSJF(){
         sjf();
         break;
       case 2:
-        cout << "\033[2J\033[H";
-        cout << "Saliendo..." << endl;
+        cout << "Saliendo..." << endl<< endl;
         break;
       default:
         cout << "Opción inválida." << endl;
@@ -553,6 +589,8 @@ void PlanificacionCPU::sjf(){
     }
   }
 
+  cout << endl << "----------------------------" << endl;
+  cout << endl << "Diagrama de Gantt:" << endl << endl;
   int ind = 0;
   for(int i = 0; i < sjfEjecucion.size(); i++){
     cout << sjfEjecucion[i] << "--";
@@ -584,6 +622,7 @@ void PlanificacionCPU::sjf(){
   
   cout << "Tiempo de espera promedio: ";
   cout << tiempoDeEsperaPromedio/nombreProcesosSJF2.size() << endl;
+  cout << endl << "----------------------------" << endl;
   cout << "SJF ejecutado" << endl << endl;
 
   sjfEjecucion.clear();
@@ -594,7 +633,7 @@ void PlanificacionCPU::sjf(){
   arrivalTimeSJF.clear();
   arrivalTimeSJF2.clear();
   nombreProcesosSJF.clear();
-  nombreProcesosSJF2.clear();
+  //nombreProcesosSJF2.clear();
 }
 
 void PlanificacionCPU::ordenarArrivalTimeSJF(){
@@ -615,7 +654,7 @@ void PlanificacionCPU::ordenarArrivalTimeSJF(){
       arrivalTimeSJF[i] = pairedVector[i].first;
       nombreProcesosSJF[i] = pairedVector[i].second;
   }
-};
+}
 
 void PlanificacionCPU::ordenarBursTimeSJF(){
   size_t n = bursTimeSJF.size();
@@ -635,7 +674,7 @@ void PlanificacionCPU::ordenarBursTimeSJF(){
       bursTimeSJF[i] = pairedVector[i].first;
       nombreProcesosSJF[i] = pairedVector[i].second;
   }
-};
+}
 
 int PlanificacionCPU::clcburstTime(string nombreArchivo){
 
@@ -679,14 +718,24 @@ void PlanificacionCPU::algRR(){
     switch(opcion){
       case 1:
         cout << "Iniciando algoritmo RR" << endl;
+
+        for(int i = 0; i < nombreProcesosFIFO.size(); i++){
+          nombreProcesosRR.push_back(nombreProcesosFIFO[i]);
+        }
+
+        for(int i = 0; i < burstTimeGeneral.size(); i++){
+          burstTimeRR.push_back(burstTimeGeneral[i]);
+        }
+        
         for(int i = 0; i < listaProcesos.getVectorProcesosGuardados().size(); i++){
           int arrivalTimeNuevo;
           cout << "Ingrese el tiempo de llegada del proceso " << listaProcesos.getVectorProcesosGuardados()[i].getNombre() + ": ";
           cin >> arrivalTimeNuevo;     
           listaProcesos.setArrivalTimeNuevo(arrivalTimeNuevo, i);
           arrivalTimeRR.push_back(arrivalTimeNuevo);
-          //burstTimeSJN.push_back(listaProcesos.getVectorProcesosGuardados()[i].getBurstTime());
         }
+        cout << "Ingrese el quantum a utilizar: ";
+        cin >> quantum;
         rr();
         break;
       case 2:
@@ -697,82 +746,203 @@ void PlanificacionCPU::algRR(){
         break;
     }
   }
-};
+}
 
 void PlanificacionCPU::rr(){
   cout << "Ejecutando RR..." << endl;
   int rr = 0;
-  ordenarArrivalTimeRR();
-  bool salir = false;
-  for(int i = 0; i < nombreProcesosRR.size() && !salir; i++){
-    for(int j = 0; j < listaProcesos.getVectorProcesosGuardados().size(); j++){
-      if(listaProcesos.getVectorProcesosGuardados()[j].getArrivalTime() == 0){
-        rrEjecucion.push_back("0");
-        rr += listaProcesos.getVectorProcesosGuardados()[j].getBurstTime();
-        rrEjecucion.push_back(to_string(rr));
-        rrIndicadores.push_back(nombreProcesosRR[i]);
-        salir = true;
-        break;
-      };
+  int contadorCeros = 0;
+
+  cout << endl <<"Ejecucion General de todos los procesos" << endl;
+  for(int i = 0; i < listaProcesos.getVectorProcesosGuardados().size(); i++){
+    ejecutarCicloBasico(listaProcesos.getVectorProcesosGuardados()[i].getNombre() + ".txt");
+  }
+  
+  for (int i = 0; i < arrivalTimeRR.size(); ++i) {
+    if (arrivalTimeRR[i] == 0) {
+      contadorCeros++;
     }
   }
-};
+
+  if(contadorCeros > 1){
+    bool salir = false;
+    retry1:
+
+    while(!burstTimeRR.empty()){
+      for(int i = 0; i < nombreProcesosRR.size(); i++){
+        for(int j = 0; j < listaProcesos.getVectorProcesosGuardados().size(); j++){
+          if(listaProcesos.getVectorProcesosGuardados()[j].getNombre() == nombreProcesosRR[i]){
+            if(salir == false){
+              salir = true;
+              rrEjecucion.push_back("0");
+              int burstEjecutado = calcularRestaQuantum(burstTimeRR[i], quantum);
+              rr += burstEjecutado;
+              rrEjecucion.push_back(to_string(rr));
+              rrIndicadores.push_back(nombreProcesosRR[i]);
+              int indSiSeCumplio = restarBusrtTime(i, burstEjecutado, rr, arrivalTimeRR[i], listaProcesos.getVectorProcesosGuardados()[j].getBurstTime());
+              if (indSiSeCumplio == 1) {
+                  // Utilizar goto para volver a la etiqueta "retry"
+                  goto retry1;
+              }
+            }else if(salir == true){
+              int burstEjecutado = calcularRestaQuantum(burstTimeRR[i], quantum);
+              rr += burstEjecutado;
+              rrEjecucion.push_back(to_string(rr));
+              rrIndicadores.push_back(nombreProcesosRR[i]);
+              int indSiSeCumplio = restarBusrtTime(i, burstEjecutado, rr, arrivalTimeRR[i], listaProcesos.getVectorProcesosGuardados()[j].getBurstTime());
+              if (indSiSeCumplio == 1) {
+                // Utilizar goto para volver a la etiqueta "retry"
+                goto retry1;
+              }
+            }
+          }
+        }
+      }
+    }    
+  }else if(contadorCeros == 1){
+    ordenarArrivalTimeRR();
+    bool salir = false;
+    retry2:
+    
+    while(!burstTimeRR.empty()){
+      for(int i = 0; i < nombreProcesosRR.size(); i++){
+        for(int j = 0; j < listaProcesos.getVectorProcesosGuardados().size(); j++){
+          if(listaProcesos.getVectorProcesosGuardados()[j].getNombre() == nombreProcesosRR[i]){
+            if(arrivalTimeRR[i] == 0 && salir == false){
+              salir = true;
+              rrEjecucion.push_back("0");
+              int burstEjecutado = calcularRestaQuantum(burstTimeRR[i], quantum);
+              rr += burstEjecutado;
+              rrEjecucion.push_back(to_string(rr));
+              rrIndicadores.push_back(nombreProcesosRR[i]);
+              int indSiSeCumplio = restarBusrtTime(i, burstEjecutado, rr, arrivalTimeRR[i], listaProcesos.getVectorProcesosGuardados()[j].getBurstTime());
+              if (indSiSeCumplio == 1) {
+                  // Utilizar goto para volver a la etiqueta "retry"
+                  goto retry2;
+              }
+            }else if(salir == true){
+               if(arrivalTimeRR[i] <= rr){
+                 int burstEjecutado = calcularRestaQuantum(burstTimeRR[i], quantum);
+                 rr += burstEjecutado;
+                 //cout << burstEjecutado;
+                 rrEjecucion.push_back(to_string(rr));
+                 rrIndicadores.push_back(nombreProcesosRR[i]);
+                 int indSiSeCumplio = restarBusrtTime(i, burstEjecutado, rr, arrivalTimeRR[i], listaProcesos.getVectorProcesosGuardados()[j].getBurstTime());
+                 if (indSiSeCumplio == 1) {
+                      // Utilizar goto para volver a la etiqueta "retry"
+                      goto retry2;
+                  }
+               }else{
+                 rrIndicadores.push_back("CPU INUTILIZADA");
+                 rrEjecucion.push_back(to_string(arrivalTimeRR[i]));
+                 //burstTimeRR[i] += arrivalTimeRR[i] - rr;
+                 rr += arrivalTimeRR[i] - rr;
+                 int burstEjecutado = calcularRestaQuantum(burstTimeRR[i], quantum);
+                 rr += burstEjecutado;
+                 rrEjecucion.push_back(to_string(rr));
+                 rrIndicadores.push_back(nombreProcesosRR[i]);
+                 int indSiSeCumplio = restarBusrtTime(i, burstEjecutado, rr, arrivalTimeRR[i], listaProcesos.getVectorProcesosGuardados()[j].getBurstTime());   
+                 if (indSiSeCumplio == 1) {
+                      // Utilizar goto para volver a la etiqueta "retry"
+                      goto retry2;
+                  }
+               }
+            }
+          }
+        }
+      }
+    }
+  }
+
+  cout << endl << "----------------------------" << endl;
+  cout << endl << "Diagrama de Gantt:" << endl << endl;
+  int ind = 0;
+  for(int i = 0; i < rrEjecucion.size(); i++){
+    cout << rrEjecucion[i] << "--";
+    if(ind < rrIndicadores.size()){
+      cout << rrIndicadores[i];
+      ind++;
+    }
+    cout <<"--";
+  }
+
+  cout << endl << endl << "Metricas" <<endl;
+  float tiempoDeRetornoPromedio = 0;
+  double tiempoDeEsperaPromedio = 0;
+  int tiempoCompletado = 0;
+  for(int i = 0; i < tiempoCompletadoProcesosTerminados.size(); i++){
+    tiempoCompletado = tiempoCompletadoProcesosTerminados[i];
+
+    tiempoDeRetornoPromedio += tiempoCompletado - arrivalTimeRR2[i];
+    tiempoDeEsperaPromedio += (tiempoCompletado - arrivalTimeRR2[i]) - burstTimeRR2[i];
+  }
+  
+  cout << endl << "Tiempo de retorno promedio: ";
+  cout << tiempoDeRetornoPromedio/burstTimeGeneral.size() << endl << endl;
+  
+  cout << "Tiempo de espera promedio: ";
+  cout << tiempoDeEsperaPromedio/burstTimeGeneral.size() << endl;
+  cout << endl << "----------------------------" << endl;
+  cout << endl <<"RR ejecutado" << endl << endl;
+
+  rrEjecucion.clear();
+  rrIndicadores.clear();
+  burstTimeRR.clear();
+  burstTimeRR2.clear();
+  arrivalTimeRR.clear();
+  nombreProcesosRR.clear();
+  tiempoCompletadoProcesosTerminados.clear();
+  arrivalTimeRR2.clear();
+}
 
 void PlanificacionCPU::ordenarArrivalTimeRR(){
   size_t n = arrivalTimeRR.size();
 
   // Crear un vector de pares para almacenar números e identificadores juntos
-  vector<pair<int, string>> pairedVector;
+  vector<tuple<int, string, int>> tupleVector;
 
   for (size_t i = 0; i < n; ++i) {
-    pairedVector.push_back(make_pair(arrivalTimeRR[i], nombreProcesosRR[i]));
+    tupleVector.push_back(make_tuple(arrivalTimeRR[i], nombreProcesosRR[i], burstTimeRR[i]));
   }
 
   // Ordenar el vector de pares basándose en el primer elemento (los números)
-  sort(pairedVector.begin(), pairedVector.end());
+  sort(tupleVector.begin(), tupleVector.end());
 
   // Actualizar los vectores originales con los elementos ordenados
   for (size_t i = 0; i < n; ++i) {
-      arrivalTimeRR[i] = pairedVector[i].first;
-      nombreProcesosRR[i] = pairedVector[i].second;
+      arrivalTimeRR[i] = get<0>(tupleVector[i]);
+      nombreProcesosRR[i] = get<1>(tupleVector[i]);
+        burstTimeRR[i] = get<2>(tupleVector[i]);
   }
-
 }
 
-void PlanificacionCPU::ordenarQuantum(){
-  size_t n = arrivalTimeRR.size();
+int PlanificacionCPU::calcularRestaQuantum(int bursTimeDelProceso, int quantum){
+  int burstTimeRestante = bursTimeDelProceso - quantum;
 
-  // Crear un vector de pares para almacenar números e identificadores juntos
-  vector<pair<int, string>> pairedVector;
-
-  for (size_t i = 0; i < n; ++i) {
-    pairedVector.push_back(make_pair(arrivalTimeRR[i], nombreProcesosRR[i]));
+  if(burstTimeRestante > 0){
+    return quantum;
+  }else if(burstTimeRestante < 0){
+    return burstTimeRestante + quantum;
+  }else if (burstTimeRestante == 0){
+    return quantum;
   }
-
-  // Ordenar el vector de pares basándose en el primer elemento (los números)
-  sort(pairedVector.begin(), pairedVector.end());
-
-  // Actualizar los vectores originales con los elementos ordenados
-  for (size_t i = 0; i < n; ++i) {
-      arrivalTimeRR[i] = pairedVector[i].first;
-      nombreProcesosRR[i] = pairedVector[i].second;
-  }
-
-  // Imprimir los vectores ordenados
-  std::cout << "Numeros ordenados: ";
-  for (const auto& num : arrivalTimeRR) {
-      std::cout <<  num << " ";
-  }
-
-  cout << endl;
-
-  std::cout << "\nIdentificadores ordenados: ";
-  for (const auto& id : nombreProcesosRR) {
-      std::cout << id << " " ;
-  }
-  cout << endl;
+  return -1;
 }
 
+int PlanificacionCPU::restarBusrtTime(int posicion, int numRestar, int tiempoCompletado, int arrivalDelTiempoCompletado, int burstTimeDelTiempoCompletado){
+  burstTimeRR[posicion] -= numRestar;
+
+  if(burstTimeRR[posicion] <= 0){
+    burstTimeRR.erase(burstTimeRR.begin() + posicion);
+    burstTimeRR2.push_back(burstTimeDelTiempoCompletado);
+    nombreProcesosRR.erase(nombreProcesosRR.begin() + posicion);
+    tiempoCompletadoProcesosTerminados.push_back(tiempoCompletado);
+    arrivalTimeRR2.push_back(arrivalDelTiempoCompletado);
+    arrivalTimeRR.erase(arrivalTimeRR.begin() + posicion);
+    return 1;
+  }
+  return 0;
+}
 
 int PlanificacionCPU::ejecutarCicloBasico(string nombreArchivo){
   CicloBasico cicloBasico1("Ciclo basico de instruccion");
@@ -808,7 +978,9 @@ int PlanificacionCPU::ejecutarCicloBasico(string nombreArchivo){
 
     string instruccion = partes[0];
 
-    if(instruccion == "SET") {
+    if(instruccion == "N"){
+      cout << "No hay linea" << endl;
+    }else if(instruccion == "SET") {
 
       cout << "Asignando valor de memoria con SET ";
       string direccionEnMemoria = partes[1];
@@ -869,4 +1041,6 @@ void PlanificacionCPU::mostrarMenu(){
   cout << "│                Santiago Alzate - 2242274                 │"<<endl;
   cout << "│                                                          │"<<endl;
   cout << "●┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅●"<<endl<<endl;
+
+  cout << "¡Revise el archivo instrucciones.txt antes de iniciar!"<<endl<<endl;
 }

@@ -19,7 +19,7 @@ void ProcesosGuardados::setArrivalTimeNuevo(int arrivalTime, int posicion){
 
 void ProcesosGuardados::agregarProceso(proceso p) {
   procesosGuardados.push_back(p);
-  cout << "Proceso agregado exitosamente" << endl;
+  cout << endl << "Proceso agregado exitosamente" << endl << endl;
 }
 
 void ProcesosGuardados::mostrarTodosProcesos(){
@@ -29,7 +29,6 @@ void ProcesosGuardados::mostrarTodosProcesos(){
     cout << "Nombre: " << procesosGuardados[i].getNombre() << endl;
     cout << "Arrival Time: " << procesosGuardados[i].getArrivalTime() << endl;
     cout << "Burst Time: " << procesosGuardados[i].getBurstTime() << endl;
-    cout << "Prioridad: " << procesosGuardados[i].getPrioridad() << endl;
     cout << "Indicador: " << procesosGuardados[i].getIndicador() << endl; 
     cout << "-------------------------------" << endl;
     //string nombreArchivo = procesosGuardados[i].getNombre() + ".txt";
@@ -56,7 +55,6 @@ bool ProcesosGuardados::buscarProceso(int indicador){
       cout << endl <<"Nombre: " << procesosGuardados[i].getNombre() << endl;
       cout << "Arrival Time: " << procesosGuardados[i].getArrivalTime() << endl;
       cout << "Burst Time: " << procesosGuardados[i].getBurstTime() << endl;
-      cout << "Prioridad: " << procesosGuardados[i].getPrioridad() << endl;
       cout << "Indicador: " << procesosGuardados[i].getIndicador() << endl;
       cout << "\n";
       return true;
@@ -72,7 +70,6 @@ bool ProcesosGuardados::buscarNombreProceso(string nombre){
       cout << endl <<"Nombre: " << procesosGuardados[i].getNombre() << endl;
       cout << "Arrival Time: " << procesosGuardados[i].getArrivalTime() << endl;
       cout << "Burst Time: " << procesosGuardados[i].getBurstTime() << endl;
-      cout << "Prioridad: " << procesosGuardados[i].getPrioridad() << endl;
       cout << "Indicador: " << procesosGuardados[i].getIndicador() << endl;
       cout << "\n";
       return true;
